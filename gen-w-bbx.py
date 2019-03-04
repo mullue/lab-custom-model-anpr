@@ -46,16 +46,18 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
+# import common
 import json
 
 FONT_DIR = "./fonts"
 FONT_HEIGHT = 32  # Pixel size to which the chars are resized
-NUMS =['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ' ']
+NUMS =['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 CHARS=['가', '나', '다', '라', '마', '거', '너', '더', '러', '머', '고', '노', '도', '로', '모', '구', '누', '두', '루', '무', 
        '버', '서', '어', '저', '처', '커', '터', '퍼', '보', '소', '오', '조', '초', '코', '토', '포', '부', '수', '우', '주', '추', '쿠', '투', '푸', '후', 
        '그', '느', '드', '르', '므', '브', '스', '으', '즈', '츠', '크', '트', '프', '흐',
        '바', '사', '아', '자', '차', '카', '타', '파', '하', '허', '호']
-JOIN =NUMS + CHARS
+SPACE=[' ']
+JOIN =NUMS + CHARS + SPACE
 n_chr=len(JOIN)
 
 OUTPUT_SHAPE = (64, 128)
@@ -164,13 +166,13 @@ def make_affine_transform(from_shape, to_shape,
 
 def generate_code():
     return "{}{}{} {}{}{}{}".format(
-        random.choice(common.DIGITS),
-        random.choice(common.DIGITS),
+        NUMS[random.randrange(0,len(NUMS))],
+        NUMS[random.randrange(0,len(NUMS))],
         CHARS[random.randrange(0,len(CHARS))],
-        random.choice(common.DIGITS),
-        random.choice(common.DIGITS),
-        random.choice(common.DIGITS),
-        random.choice(common.DIGITS))
+        NUMS[random.randrange(0,len(NUMS))],
+        NUMS[random.randrange(0,len(NUMS))],
+        NUMS[random.randrange(0,len(NUMS))],
+        NUMS[random.randrange(0,len(NUMS))])
 
 
 def rounded_rect(shape, radius):
@@ -199,7 +201,7 @@ def generate_plate(font_height, char_ims):
     text_width += (len(code) - 1) * spacing
 
     out_shape = (int(font_height + v_padding * 2),
-                 int(text_width/8 + h_padding * 2))
+                 int(text_width/14 + h_padding * 2))
 
     text_color, plate_color = pick_colors()
     text_mask = np.zeros(out_shape)
@@ -297,10 +299,10 @@ def generate_ims():
         yield generate_im(font_char_ims[random.choice(fonts)], num_bg_images)
     
 def write_files(file_id, im, c, bbx): 
-    img_file = "gen-imgs/{}.png".format(file_id)
-    tag_file = "gen-tags/{}.json".format(file_id)
-    crp_file = "cropped-imgs/{}.png".format(file_id)
-    num_file = "nums-tags/{}.json".format(file_id)
+    img_file = "gen/gen-imgs/{}.png".format(file_id)
+    tag_file = "gen/gen-tags/{}.json".format(file_id)
+    crp_file = "gen/cropped-imgs/{}.png".format(file_id)
+    num_file = "gen/nums-tags/{}.json".format(file_id)
     
     # write original image file
     cv2.imwrite(img_file, im * 255.)
@@ -340,4 +342,4 @@ if __name__ == "__main__":
         write_files(file_id, im, c, bbx)
         if (img_idx<10): print(file_id)
 
-    print('... {} files and tags were generated'.format(img_idx+1))
+    print('... {} images and tags were generated'.format(img_idx+1))
