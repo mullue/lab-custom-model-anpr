@@ -7,24 +7,17 @@ from keras.preprocessing import image
 from keras.utils import layer_utils
 from keras.utils.data_utils import get_file
 from keras.applications.imagenet_utils import preprocess_input
-# import pydot
-# from IPython.display import SVG
 from keras.utils.vis_utils import model_to_dot
 from keras.utils import plot_model
-# from kt_utils import *
 from keras.layers import concatenate
 import os
 import argparse
 
 import json
 from PIL import Image
-# from PIL import ImageDraw
-# from PIL import ImageFont
 
 import keras.backend as K
 K.set_image_data_format('channels_last')
-# import matplotlib.pyplot as plt
-# from matplotlib.pyplot import imshow
 import tensorflow as tf
 
 from tensorflow.contrib.eager.python import tfe
@@ -107,7 +100,6 @@ def model(input_shape):
 
     # FLATTEN X (means convert it to a vector) + FULLYCONNECTED
     X = tf.keras.layers.Flatten()(X)
-#     X = tf.keras.layers.Dense(7, activation='softmax', name='fc')(X)
 
     #----------------------------------------------------------
     d1 = tf.keras.layers.Dense(81, activation='softmax', name='d1')(X)
@@ -125,11 +117,6 @@ def model(input_shape):
     return model
 
 if __name__ == "__main__":
-#     print(os.listdir('/opt/ml/input/data/'))
-#     print(os.listdir('/opt/ml/input/data/train/'))
-#     print(os.listdir('/opt/ml/input/data/train_annotation/'))
-#     print(os.listdir('/opt/ml/input/data/validation/'))
-#     print(os.listdir('/opt/ml/input/data/validation_annotation/'))\
 
     args, _ = parse_args()
     
@@ -152,7 +139,6 @@ if __name__ == "__main__":
                 loss=['categorical_crossentropy','categorical_crossentropy','categorical_crossentropy','categorical_crossentropy',
                       'categorical_crossentropy','categorical_crossentropy','categorical_crossentropy'],
                 metrics = ["accuracy"])
-#         model_k.fit(X_train, [i for i in Y_train], epochs=args.epochs, batch_size=args.batch_size, verbose=0)
         model_k.fit(t_imgs, [i.reshape([-1,81]) for i in t_annotations], 
             validation_data=(v_imgs, [i.reshape([-1,81]) for i in v_annotations]), 
             epochs=args.epochs, batch_size=64, verbose=1)
