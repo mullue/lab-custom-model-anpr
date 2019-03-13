@@ -141,7 +141,7 @@ if __name__ == "__main__":
                 metrics = ["accuracy"])
         model_k.fit(t_imgs, [i.reshape([-1,81]) for i in t_annotations], 
             validation_data=(v_imgs, [i.reshape([-1,81]) for i in v_annotations]), 
-            epochs=args.epochs, batch_size=64, verbose=1)
+            epochs=args.epochs, batch_size=batch_size, verbose=1)
         
         scores = model_k.evaluate(v_imgs, [i for i in v_annotations], batch_size=args.batch_size, verbose=1, sample_weight=None)
         print("scores: ", scores)
