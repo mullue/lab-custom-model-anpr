@@ -13,8 +13,8 @@ This HoL consists of four labs, each with the following details:
 - Example structure of annotation file  
 
 
-<img src='imgs/Lab1.png' stype='width:600px;'/> 
-- You will generate 1)license plate images, 2)license plate position annotations, 3)cropped plate images, and 4)license plate characters annotations files
+<img src='imgs/Lab1.png' stype='width:600px;'/>  
+- You will generate 1)license plate images, 2)license plate position annotations, 3)cropped plate images, and 4)license plate characters annotations files.
   
   
   
@@ -27,8 +27,8 @@ This HoL consists of four labs, each with the following details:
 - Developing custom Object Detection 
 - Leveraging Transfer Learning (Resnet-50)
 
-<img src='imgs/Lab2.png' stype='width:600px;'/> 
-  
+<img src='imgs/Lab2.png' stype='width:600px;'/>  
+- You will train custom object detection algorithm from license plate images and licent plate position annotations.
   
   
   
@@ -40,8 +40,8 @@ This HoL consists of four labs, each with the following details:
 - Developing and testing custom Tensorflow script and before running trainning jobs on SageMaker
 
 
-<img src='imgs/Lab3.png' stype='width:600px;'/> 
-  
+<img src='imgs/Lab3.png' stype='width:600px;'/>  
+- You will construct your own CNN architecture and test it.
   
   
   
@@ -55,8 +55,8 @@ This HoL consists of four labs, each with the following details:
 - Elastic Inference 
 - Invoking endpoint with new data
 
-<img src='imgs/Lab4.png' stype='width:600px;'/> 
-  
+<img src='imgs/Lab4.png' stype='width:600px;'/>  
+- You will finally build your license character detection model and invoke the model with new data
   
   
   
