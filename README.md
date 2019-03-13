@@ -61,7 +61,12 @@ This HoL consists of four labs, each with the following details:
   
   
 <hr/>
-
+  
+You may expand the result of this Lab to other usecases such as serial number detection of your product, etc.
+  
+<img src='imgs/OtherUsecase.png' stype='width:200px;'/> 
+  
+<hr/>
 Seongmoon Kang  
 kseongmo@amazon.coms
 
