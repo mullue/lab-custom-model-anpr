@@ -66,7 +66,12 @@ You may expand the result of this Lab to other usecases such as serial number de
   
 <img src='imgs/OtherUsecase.png' stype='width:200px;'/> 
   
+  
+  
+  
 <hr/>
-Seongmoon Kang  
-kseongmo@amazon.coms
+Seongmoon Kang   
+
+mullue@gmail.com  
+
 
