@@ -67,11 +67,11 @@ od_model.set_hyperparameters(base_network='resnet-50',
 ```
 After the 10~20 minutes training, the training will end and you can see the result like below diagram. From the result list, the first number 0 means a label which means license plate in our example. The second 0.99... is the confidence for the detected object(license plate). The consecutive numbers from the third to the last mean relative x, y coordinates in the image, the width of detected area, and the height of the detected area, respectively.  
   
-{'prediction': [[0.0, 0.9999839067459106, 0.1715950071811676, 0.27236270904541016, 0.808781623840332, 0.7239940166473389]]}
+{'prediction': [[0.0, 0.9999839067459106, 0.1715950071811676, 0.27236270904541016, 0.808781623840332, 0.7239940166473389]]}  
 <img src='imgs/od_sample1.png' stype='width:200px;'/>  
-{'prediction': [[0.0, 0.9999842643737793, 0.20243453979492188, 0.3618628978729248, 0.8014888763427734, 0.6346850991249084]]}
+{'prediction': [[0.0, 0.9999842643737793, 0.20243453979492188, 0.3618628978729248, 0.8014888763427734, 0.6346850991249084]]}  
 <img src='imgs/od_sample2.png' stype='width:200px;'/>  
-{'prediction': [[0.0, 0.9999804496765137, 0.14474740624427795, 0.230726957321167, 0.8229358196258545, 0.7649730443954468]]}
+{'prediction': [[0.0, 0.9999804496765137, 0.14474740624427795, 0.230726957321167, 0.8229358196258545, 0.7649730443954468]]}  
 <img src='imgs/od_sample3.png' stype='width:200px;'/>   
 
 <br />
