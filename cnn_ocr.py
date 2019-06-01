@@ -42,6 +42,7 @@ def parse_args():
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--learning_rate', type=float, default=0.001)
+    parser.add_argument('--verbose', type=int, default=1)
     
     # data directories
     parser.add_argument('--train', type=str, default=os.environ.get('SM_CHANNEL_TRAIN'))
@@ -119,32 +120,33 @@ def model(input_shape):
 if __name__ == "__main__":
 
     args, _ = parse_args()
+    print('args test: learning_rate = {}, batch_size = {}, epochs = {}'.format(args.learning_rate, args.batch_size, args.epochs))
     
-    # ========================================================
+    # change the path to use '/opt/ml/input/data/{channel}/...'
     t_imgs, t_annotations = get_data_pair('/opt/ml/input/data/train/', '/opt/ml/input/data/train_annotation/')
     v_imgs, v_annotations = get_data_pair('/opt/ml/input/data/validation/', '/opt/ml/input/data/validation_annotation/')
     
-    # ========================================================
-    
     device = '/gpu:0' 
     print(device)
-    batch_size = args.batch_size
-    epochs = args.epochs
-    print('batch_size = {}, epochs = {}'.format(batch_size, epochs))
     
     with tf.device(device):
         input_shape = (128,64,1)
         model_k = model(input_shape)
+        
+        # use hyperparameters ex) args.learning_rate
         model_k.compile(optimizer=tf.train.AdamOptimizer(args.learning_rate), 
                 loss=['categorical_crossentropy','categorical_crossentropy','categorical_crossentropy','categorical_crossentropy',
                       'categorical_crossentropy','categorical_crossentropy','categorical_crossentropy'],
                 metrics = ["accuracy"])
+        
+        # use hyperparameters ex) args.epochs, args.batch_size, etc.
         model_k.fit(t_imgs, [i.reshape([-1,81]) for i in t_annotations], 
             validation_data=(v_imgs, [i.reshape([-1,81]) for i in v_annotations]), 
-            epochs=args.epochs, batch_size=batch_size, verbose=1)
+            epochs=args.epochs, batch_size=args.batch_size, verbose=args.verbose)
         
         scores = model_k.evaluate(v_imgs, [i for i in v_annotations], batch_size=args.batch_size, verbose=1, sample_weight=None)
         print("scores: ", scores)
+        
         # save checkpoint for locally loading in notebook
         saver = tfe.Saver(model_k.variables)
         saver.save(args.model_dir + '/weights.ckpt')
