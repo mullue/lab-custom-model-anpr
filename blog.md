@@ -145,13 +145,14 @@ The most important modification to run the code on SageMaker is to match the inp
 The following picture illustrates the process of the data mapping that occurs at this case. At first, you upload your data into S3. Next, in your python notebook, you will pass those S3 path into your training job as a parameter. And then SageMaker will copy the S3 data into the '/opt/ml/input/data/{channel}/' folder in your Docker Container. Therefore, in your BYOS(entry point script), you should refer those folders of '/opt/ml/input/data/{channel}/' path.  
 
 <img src='imgs/sm_data_path.png' stype='width:600px;'/>  
-	
+<br />
+    
 Notice the orange channel names in the picture above. If you pass data interface channels as a JSON key, value format, SageMaker will create each folders in your Docker Container '/opt/ml/input/data/' folder such as '/opt/ml/input/data/train/', '/opt/ml/input/data/validation/', etc.
 
 One more thing to understand is the control of hyperparameters. You may want to control hyperparameters like 'learning rate', 'number of epochs', etc. externally. Here, external means your development environment (to initiate training jobs). In Tensorflow script mode, hyperparameters will be passed as arguments of the python run command line script when the training job starts. 
 
 <img src='imgs/sm_parameters.png' stype='width:600px;'/>  
- 
+<br />
 
 Except those two, you can just write your BYOS code as you have done before. And the most important part will be the match of the data channel. (In fact, you may start your first script with hard-coded hyperparameters inside the BYOS.)
 
@@ -173,13 +174,13 @@ If you finish Lab4, you will see the result like below:
 
 You may find some mistakes like 3rd example result. (it recognized Korean character '노' as '느'.) It is a natural at the first stage of the ML project. You may add more synthesis or real data, change the internal architecture of CNN, and break the problem to 3 steps (Finding character areas and classifying the character), etc. You will repeat these experiments until you get the desired target quality. 
 
-<br /><br />
+<br />
 
 ### Going further
 
 Now you can create your own custom Object Detection and custom Tensorfllow CNN model with SageMaker if you have labeled data for the object you want to track. For example, you may develop your serial number detector of your product or your custom pet detector from your mobile photo book. (Below are conceptual illustrations.)
 
- 
+<img src='imgs/further.png' stype='width:600px;'/>  
 
 
 
