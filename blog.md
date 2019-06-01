@@ -182,6 +182,7 @@ When you finish Lab4, you will see the result like below:
 <img src='imgs/result3.png' stype='width:100px;'/>  
 ['0', '5', '느', '4', '9', '4', '6']  
 <br />
+  
 You may find some mistakes like  3rd result above. (it recognized Korean character '노' as '느'.) It is a natural at the first stage of the ML project. You may add more synthesis or real data, change the internal architecture of CNN, or break the problem to 3 sub problems (Finding character areas and classifying the character), etc. You will repeat these experiments until you get the desired target quality. 
 
 <br />
