@@ -13,14 +13,14 @@ The diagram below shows an example of approaches that prepare a machine learning
 <img src='imgs/ml_projects.png' stype='width:600px;'/>  
 
 We will use the Korean license plate as test data. Each country's license plate has a limited number of characters. In Korea, the following 81 characters are used. You can generate random 7 character sequences (6 numbers and 1 Korean character at 3rd position) as test data by composing these characters. (source: [wikipedia](https://ko.wikipedia.org/wiki/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD%EC%9D%98_%EC%B0%A8%EB%9F%89_%EB%B2%88%ED%98%B8%ED%8C%90))
-```
+```python
 NUMS =['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 CHARS=['가', '나', '다', '라', '마', '거', '너', '더', '러', '머', '고', '노', '도', '로', '모', '구', '누', '두', '루', '무', '버', '서', '어', '저', '처', '커', '터', '퍼', '보', '소', '오', '조', '초', '코', '토', '포', '부', '수', '우', '주', '추', '쿠', '투', '푸', '후',  '그', '느', '드', '르', '므', '브', '스', '으', '즈', '츠', '크', '트', '프', '흐', '바', '사', '아', '자', '차', '카', '타', '파', '하', '허', '호']
 SPACE=[' ']
 JOIN =NUMS + CHARS + SPACE
 ```
 As you have noticed, it is just a list of possible characters and we will use the index of this list as our training and inference. This means you can expand our problem to the problem of other country's license plate character detection as well as the problem of reading the product serial numbers or signboards. For example, Japanese license plates can have the following characters with numbers according to Wikipedia. (source: [wikipedia](https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_Japan))
-```
+```python
 CHARS=['さ', 'す', 'せ', 'そ', 'た', 'ち', 'つ', 'て', 'と', 'な', 'に', 'ぬ', 'ね', 'の', 'は', 'ひ', 'ふ', 'ほ', 'ま', 'み', 'む', 'め', 'も', 'や', 'ゆ', 'よ', 'ら', 'り', 'る', 'ろ', 'れ', 'わ', 'あ', 'い', 'う', 'え', 'か', 'き', 'く', 'け', 'こ', 'を']
 ```
 <br />
@@ -31,7 +31,7 @@ In the Lab 1, you will generate synthesized images with labels for your ML train
 
 To create images in the Lab, simply execute the following code in ipynb.
 
-```
+```python
 %run gen-w-bbx.py {num_of_images}
 ```
 
@@ -41,7 +41,7 @@ You will generate 2 kinds of labeled data pair: raw image with the label of lice
   
 <br /><br />
 If you are wondering about the image synthesis, below code is the secret. (It's in the gen-w-bbx.py file.)
-```
+```python
 out = plate * plate_mask + bg * (1.0 - plate_mask)
 ```
 Here, 'plate' is the random sequence of characters. 'plate_mask' is the position of the license plate, which you will add or subtract from plate and background images. In the next diagram, the first term 'plate * plate_mask' is the element-wise multiplication of the plate number image and plate_mask, and the second term 'bg * (1.0 - plate_mask)' will be the element-wise multiplication of background image and inverted mask. And then, you can get a final image by simply adding these two terms. (Lab uses Grayscale for the purpose of simplification.)
@@ -56,7 +56,7 @@ Here, 'plate' is the random sequence of characters. 'plate_mask' is the position
 In Lab 2, you will develop your custom Object Detection model to detect the area of license plate with SageMaker built-in Object Detection algorithm. (https://docs.aws.amazon.com/sagemaker/latest/dg/object-detection.html) You can just follow the guide of ipynb of Lab to upload files into S3, run your training job, deploy the trained model, and lastly test the inference from your deployed model. 
 
 One important concept you need to remember in this Lab is Transfer Learning. As you use built-in algorithm of SageMaker you can turn Transfer Learning on by setting the ‘use_pretrained_model’ hyperparameter as 1(true), which enables you to leverage pre-trained weight of CNN architecture. This allows you to obtain a high quality model with a relatively small number of images. (Lab uses 10,000 images as default but it also works well with 1,000 images.)
-```
+```python
 od_model.set_hyperparameters(base_network='resnet-50',
                              use_pretrained_model=1,
                              num_classes=1,
@@ -81,7 +81,7 @@ After the 10~20 minutes training, the training will end and you can see the resu
 In Lab 3, you will write your own custom CNN architecture with Tensorflow and run it quickly to check if the code is grammatically correct. It will have 128 x 64 input layer, 3 Convolutional layers with Max Pooling and Batch Normalization, 1 flatten layer right before the output layer, and finally 7 output layers for each character of license plate number. We will reshape input images to 128 x 64. The last output nodes express the probability of each classification among 81 characters. 
 
 You will see the summary of the architecture easily thanks to Keras as below. 
-```
+```python
 __________________________________________________________________________________________________
 Layer (type)                    Output Shape         Param #     Connected to                     
 ==================================================================================================
@@ -140,7 +140,7 @@ ________________________________________________________________________________
 
 In Lab 4, you will see how to modify the code of Lab 3 to run on Amazon SageMaker. For TensorFlow versions 1.11 and later, the SageMaker Python SDK supports script mode training scripts. With this mode, you can write BYOS in much the same way as you would in an existing environment. 
 
-The most important modification to run the code on SageMaker is to match the input channel of the training data. SageMaker training job runs based on Docker Container and it assumes that the training data is on the S3. In this case, how does the training job that runs on Docker Container access the data in S3? 
+The most important modification to run the code on SageMaker is to match the input/output channels of the data. In terms of the input channel, SageMaker training job runs based on Docker Container and it assumes that the training data is on the S3. In this case, how does the training job that runs on Docker Container access the data in S3? 
 
 The following picture illustrates the process of the data mapping that occurs at this case. At first, you upload your data into S3. Next, in your python notebook, you will pass those S3 path into your training job as a parameter. And then SageMaker will copy the S3 data into the '/opt/ml/input/data/{channel}/' folder in your Docker Container. Therefore, in your BYOS(entry point script), you should refer those folders of '/opt/ml/input/data/{channel}/' path.  
 
@@ -149,21 +149,31 @@ The following picture illustrates the process of the data mapping that occurs at
     
 Notice the orange channel names in the picture above. If you pass data interface channels as a JSON key, value format, SageMaker will create each folders in your Docker Container '/opt/ml/input/data/' folder such as '/opt/ml/input/data/train/', '/opt/ml/input/data/validation/', etc.
 
-One more thing to understand is the control of hyperparameters. You may want to control hyperparameters like 'learning rate', 'number of epochs', etc. externally. Here, external means your development environment (to initiate training jobs). In Tensorflow script mode, hyperparameters will be passed as arguments of the python run command line script when the training job starts. 
+After the training job is finishes, the result should be sent back to S3. SageMaker will copy the trainned model from the folder '/opt/ml/model' to S3 at the end of training. Therefore, you can just put your trained model to this folder like below example.
+
+```python
+# save checkpoint for locally loading in notebook
+saver = tfe.Saver(model_k.variables)
+saver.save(model_dir + '/weights.ckpt')
+        
+# create a separate SavedModel for deployment to a SageMaker endpoint with TensorFlow Serving
+tf.contrib.saved_model.save_keras_model(model_k, model_dir)
+```
+          
+
+One more thing to understand is the control of hyperparameters. You may want to control hyperparameters like 'learning rate', 'number of epochs', etc. externally. Refer to the below picture. When you initiate your training job in your Jupyter notebook, hyperparameters will be passed as arguments of the python run command line script like the code in the middle of the picture. (You can find this command from the log of your trining job in Lab4.) And you can use them in your script to tune your job. 
 
 <img src='imgs/sm_parameters.png' stype='width:600px;'/>  
 <br />
 
-Except those two, you can just write your BYOS code as you have done before. And the most important part will be the match of the data channel. (In fact, you may start your first script with hard-coded hyperparameters inside the BYOS.)
+Now you can run your code on SageMaker. In fact, you may start your first script with hard-coded hyperparameters inside the BYOS. The most important part will be the match of in/out channels. You may refer to below resources for more information regarding Tensorflow script mode.
 
-You may refer to below resources for more information regarding Tensorflow script mode.
-
-* https://docs.aws.amazon.com/sagemaker/latest/dg/tf.html
 * https://aws.amazon.com/blogs/machine-learning/using-tensorflow-eager-execution-with-amazon-sagemaker-script-mode/
+* https://docs.aws.amazon.com/sagemaker/latest/dg/tf.html
 * https://github.com/aws-samples/amazon-sagemaker-script-mode
-* https://www.slideshare.net/AmazonWebServices/bring-your-own-apache-mxnet-and-tensorflow-scripts-to-amazon-sagemaker-aim350-aws-reinvent-2018?qid=d0acc214-ab2c-4549-8d00-45c1c956b54c&v=&b=&from_search=1
 
-If you finish Lab4, you will see the result like below:
+
+When you finish Lab4, you will see the result like below:
 
 <img src='imgs/result1.png' stype='width:100px;'/>  
 ['3', '0', '호', '7', '3', '9', '3']  
@@ -171,8 +181,8 @@ If you finish Lab4, you will see the result like below:
 ['2', '3', '저', '9', '7', '2', '6']  
 <img src='imgs/result3.png' stype='width:100px;'/>  
 ['0', '5', '느', '4', '9', '4', '6']  
-
-You may find some mistakes like 3rd example result. (it recognized Korean character '노' as '느'.) It is a natural at the first stage of the ML project. You may add more synthesis or real data, change the internal architecture of CNN, and break the problem to 3 steps (Finding character areas and classifying the character), etc. You will repeat these experiments until you get the desired target quality. 
+<br />
+You may find some mistakes like  3rd result above. (it recognized Korean character '노' as '느'.) It is a natural at the first stage of the ML project. You may add more synthesis or real data, change the internal architecture of CNN, or break the problem to 3 sub problems (Finding character areas and classifying the character), etc. You will repeat these experiments until you get the desired target quality. 
 
 <br />
 

@@ -3,7 +3,9 @@
 The goal of this notebook is to show how to develop custom Machine Learning models on SageMaker for your business usecase. 
 You will use the SageMaker built-in object detection algorithm and Tensorflow docker images to detect license plate of a car and recognize the characters of the plate using CNN and computer vision technology. 
 
-This HoL consists of four labs, each with the following details:
+If you want to refer to the introduction of the **blog form, please click [this link](blog.md)**
+
+This HoL consists of four Labs, each with the following details:
 
 <hr/>  
 
