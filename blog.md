@@ -151,13 +151,16 @@ The following picture illustrates the process of the data mapping that occurs in
 Look at the orange channel names in the picture above. If you pass data interface channels as a JSON key-value format, SageMaker will create each folder inside your Docker Container '/opt/ml/input/data/' folder, such as '/opt/ml/input/data/train/', '/opt/ml/input/data/validation/', etc. You should refer those folders by using SM_CHANNEL_{channel} parameters (or using those pathes explicitly).
 
 
-After the training job is finishes, the result will be sent back to S3. SageMaker will copy the trainned model from the folder '/opt/ml/model' to S3 at the end of training. Therefore, you need to store your trained model in this folder.
+After the training job is finishes, the result will be sent back to S3. SageMaker will copy the trainned model from the folder '/opt/ml/model' to S3 at the end of training. Therefore, you need to store your trained model in this folder. In Tensorflow, you need to store checkpoint and model data.
+
 
 ```python
+# model_dir = '/opt/ml/model' # this value will be passed as an argument)
+
 # save checkpoint for locally loading in notebook
 saver = tfe.Saver(model_k.variables)
 saver.save(model_dir + '/weights.ckpt')
-        
+
 # create a separate SavedModel for deployment to a SageMaker endpoint with TensorFlow Serving
 tf.contrib.saved_model.save_keras_model(model_k, model_dir)
 ```
