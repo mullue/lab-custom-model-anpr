@@ -46,7 +46,9 @@ def parse_args():
     
     # data directories
     parser.add_argument('--train', type=str, default=os.environ.get('SM_CHANNEL_TRAIN'))
-    parser.add_argument('--test', type=str, default=os.environ.get('SM_CHANNEL_TEST'))
+    parser.add_argument('--validation', type=str, default=os.environ.get('SM_CHANNEL_VALIDATION'))
+    parser.add_argument('--train_annotation', type=str, default=os.environ.get('SM_CHANNEL_TRAIN_ANNOTATION'))
+    parser.add_argument('--validation_annotation', type=str, default=os.environ.get('SM_CHANNEL_VALIDATION_ANNOTATION'))
     
     # model directory: we will use the default set by SageMaker, /opt/ml/model
     parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR'))
@@ -59,10 +61,10 @@ def get_data_pair(train_dir, annotation_dir):
     for i in t_jsns:
         ext = i.split('.')[1]
         if ext == 'json':
-            with open(annotation_dir + i, "r") as jfile:
+            with open(annotation_dir + '/' + i, "r") as jfile:
                 jdata = json.load(jfile)
                 # read image
-                img=Image.open(train_dir + jdata['file']) 
+                img=Image.open(train_dir + '/' + jdata['file']) 
                 img = img.resize((128, 64))
                 imgs = img if flg_first else np.append(imgs, img)
                 # read license plate numbers
@@ -121,10 +123,11 @@ if __name__ == "__main__":
 
     args, _ = parse_args()
     print('args test: learning_rate = {}, batch_size = {}, epochs = {}'.format(args.learning_rate, args.batch_size, args.epochs))
+    print(args)
     
     # change the path to use '/opt/ml/input/data/{channel}/...'
-    t_imgs, t_annotations = get_data_pair('/opt/ml/input/data/train/', '/opt/ml/input/data/train_annotation/')
-    v_imgs, v_annotations = get_data_pair('/opt/ml/input/data/validation/', '/opt/ml/input/data/validation_annotation/')
+    t_imgs, t_annotations = get_data_pair(args.train, args.train_annotation)
+    v_imgs, v_annotations = get_data_pair(args.validation, args.validation_annotation)
     
     device = '/gpu:0' 
     print(device)
@@ -150,6 +153,7 @@ if __name__ == "__main__":
         # save checkpoint for locally loading in notebook
         saver = tfe.Saver(model_k.variables)
         saver.save(args.model_dir + '/weights.ckpt')
+        
         # create a separate SavedModel for deployment to a SageMaker endpoint with TensorFlow Serving
         tf.contrib.saved_model.save_keras_model(model_k, args.model_dir)
 

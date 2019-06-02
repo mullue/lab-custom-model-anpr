@@ -140,14 +140,16 @@ ________________________________________________________________________________
 
 In Lab 4, you will see how to modify the code of Lab 3 to run on Amazon SageMaker. For TensorFlow versions 1.11 and later, the SageMaker Python SDK supports script mode training scripts. With this mode, you can write BYOS in much the same way as you would in an existing environment. 
 
-The most important modification to run the code on SageMaker is to match the input/output channels of the data. In terms of the input channel, SageMaker training job runs based on Docker Container and it assumes that the training data is on the S3. In this case, how does the training job that runs on Docker Container access the data in S3? 
+The most important modification to run the code on SageMaker is to match the input/output channels of the data. In terms of input channels, SageMaker training job runs on Docker Container and it assumes that the training data is on the S3. In this case, how does the training job access the data in S3 and how is the job result passed after training?
 
-The following picture illustrates the process of the data mapping that occurs at this case. At first, you upload your data into S3. Next, in your python notebook, you will pass those S3 path into your training job as a parameter. And then SageMaker will copy the S3 data into the '/opt/ml/input/data/{channel}/' folder in your Docker Container. Therefore, in your BYOS(entry point script), you should refer those folders of '/opt/ml/input/data/{channel}/' path.  
+The following picture illustrates the process of the data mapping that occurs in the SageMaker. At first, you upload your data into S3. Next, in your python notebook, you will pass those S3 path into your training job as a parameter. And then SageMaker will copy the S3 data into the '/opt/ml/input/data/{channel}/' folder in your Docker Container and pass the paths as SM_CHANNEL_{channel} parameters.
+
 
 <img src='imgs/sm_data_path.png' stype='width:600px;'/>  
 <br />
     
-Notice the orange channel names in the picture above. If you pass data interface channels as a JSON key, value format, SageMaker will create each folders in your Docker Container '/opt/ml/input/data/' folder such as '/opt/ml/input/data/train/', '/opt/ml/input/data/validation/', etc.
+Look at the orange channel names in the picture above. If you pass data interface channels as a JSON key-value format, SageMaker will create each folder inside your Docker Container '/opt/ml/input/data/' folder, such as '/opt/ml/input/data/train/', '/opt/ml/input/data/validation/', etc. You should refer those folders by using SM_CHANNEL_{channel} parameters (or using those pathes explicitly).
+
 
 After the training job is finishes, the result will be sent back to S3. SageMaker will copy the trainned model from the folder '/opt/ml/model' to S3 at the end of training. Therefore, you need to store your trained model in this folder.
 
