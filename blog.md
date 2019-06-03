@@ -190,6 +190,10 @@ When you finish Lab4, you will see the result like below:
   
 You may find some mistakes like  3rd result above. (it recognized Korean character '노' as '느'.) It is a natural at the first stage of the ML project. You may add more synthesis or real data, change the internal architecture of CNN, or break the problem to 3 sub problems (Finding character areas and classifying the character), etc. You will repeat these experiments until you get the desired target quality. 
 
+In our case, adding more data is the first improvement we can try. Below is the result that I tried with 100,000 images. You can see the result was improved with more training data.
+
+  
+<img src='imgs/finalresult.png' stype='width:600px;'/>  
 <br />
 
 ### Going further
