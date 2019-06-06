@@ -129,32 +129,28 @@ if __name__ == "__main__":
     t_imgs, t_annotations = get_data_pair(args.train, args.train_annotation)
     v_imgs, v_annotations = get_data_pair(args.validation, args.validation_annotation)
     
-    device = '/gpu:0' 
-    print(device)
+    input_shape = (128,64,1)
+    model_k = model(input_shape)
+        
+    # use hyperparameters ex) args.learning_rate
+    model_k.compile(optimizer=tf.train.AdamOptimizer(args.learning_rate), 
+            loss=['categorical_crossentropy','categorical_crossentropy','categorical_crossentropy','categorical_crossentropy',
+                   'categorical_crossentropy','categorical_crossentropy','categorical_crossentropy'],
+            metrics = ["accuracy"])
+        
+    # use hyperparameters ex) args.epochs, args.batch_size, etc.
+    model_k.fit(t_imgs, [i.reshape([-1,81]) for i in t_annotations], 
+        validation_data=(v_imgs, [i.reshape([-1,81]) for i in v_annotations]), 
+        epochs=args.epochs, batch_size=args.batch_size, verbose=args.verbose)
+        
+    scores = model_k.evaluate(v_imgs, [i for i in v_annotations], batch_size=args.batch_size, verbose=1, sample_weight=None)
+    print("scores: ", scores)
     
-    with tf.device(device):
-        input_shape = (128,64,1)
-        model_k = model(input_shape)
-        
-        # use hyperparameters ex) args.learning_rate
-        model_k.compile(optimizer=tf.train.AdamOptimizer(args.learning_rate), 
-                loss=['categorical_crossentropy','categorical_crossentropy','categorical_crossentropy','categorical_crossentropy',
-                      'categorical_crossentropy','categorical_crossentropy','categorical_crossentropy'],
-                metrics = ["accuracy"])
-        
-        # use hyperparameters ex) args.epochs, args.batch_size, etc.
-        model_k.fit(t_imgs, [i.reshape([-1,81]) for i in t_annotations], 
-            validation_data=(v_imgs, [i.reshape([-1,81]) for i in v_annotations]), 
-            epochs=args.epochs, batch_size=args.batch_size, verbose=args.verbose)
-        
-        scores = model_k.evaluate(v_imgs, [i for i in v_annotations], batch_size=args.batch_size, verbose=1, sample_weight=None)
-        print("scores: ", scores)
-        
-        # save checkpoint for locally loading in notebook
-        saver = tfe.Saver(model_k.variables)
-        saver.save(args.model_dir + '/weights.ckpt')
-        
-        # create a separate SavedModel for deployment to a SageMaker endpoint with TensorFlow Serving
-        tf.contrib.saved_model.save_keras_model(model_k, args.model_dir)
+    # save checkpoint for locally loading in notebook
+    saver = tfe.Saver(model_k.variables)
+    saver.save(args.model_dir + '/weights.ckpt')
+    
+    # create a separate SavedModel for deployment to a SageMaker endpoint with TensorFlow Serving
+    tf.contrib.saved_model.save_keras_model(model_k, args.model_dir)
 
             
