@@ -1,14 +1,14 @@
 
-## Building license plate number recognition with SageMaker built-in algorithm and Tensorflow BYOS step-by-step
+## Building license plate number recognition with SageMaker built-in algorithm and Tensorflow BYOS (step-by-step)
 
-In this article, you will find how to use SageMaker built-in algorithm and Tensorflow BYOS(Bring Your Own Script) to solve a real problem. Here the problem is to recognize characters of license plates from random images. SageMaker provides algorithms to users in three ways. They are Built-in algorithm, BYOS, and BYOC(Bring Your Own Container) and you will use Built-in algorithm and BYOS very often. The code example consists of 4 Self-study Hands on Labs which you can follow and you can download it from [this link](https://github.com/mullue/lab-custom-model-anpr). The main problem and concept were referenced in [this blog](https://matthewearl.github.io/2016/05/06/cnn-anpr/). 
+In this article, you will find how to use SageMaker built-in algorithm and Tensorflow BYOS(Bring Your Own Script) to solve a real problem. Here the problem is to recognize characters of license plates from random images. SageMaker provides algorithms to users in three ways. These are the Built-in algorithm, BYOS, and BYOC(Bring Your Own Container) and you will use Built-in algorithm and BYOS very often. The code example consists of 4 Self-study Hands on Labs which you can follow and you can download it from [this link](https://github.com/mullue/lab-custom-model-anpr). The main problem and concepts were referenced in [this blog](https://matthewearl.github.io/2016/05/06/cnn-anpr/). 
 <br /><br />
 
 ### Problem and project definition
 
 We will divide our problem into two parts: the problem of detecting the area of the license plate from images and the problem of recognizing characters from license plate area. This choice can be an example of whether to solve the ML problem with end-to-end approach or sub-problem separation. 
   
-The diagram below shows an example of approaches that prepare a machine learning project. Many commercial companies that deal with license plate recognition usually follow the sub-problem separation approach like 1st picture. They detect license plate area first, and detect character’s image areas next, and then finally recognize the characters from the each character's image areas. And, of course, there are many end-to-end approaches being tried. You can refer to Metthew's blog as an example of end-to-end approach like 2nd picture. In our example, we will take a moderate approach like the 3rd picture.
+The diagram below shows an example of approaches that prepare a machine learning project. Many commercial companies that deal with license plate recognition usually follow the sub-problem separation approach like in the 1st picture. They detect license plate area first, and detect character’s image areas next, and then finally recognize the characters from the each character's image areas. And, many end-to-end approaches are being experimented with. You can refer to Metthew's blog as an example of end-to-end approach like in the 2nd picture. In our example, we will take a moderate approach like in the 3rd picture.
 
 <img src='imgs/ml_projects.png' stype='width:600px;'/>  
 
@@ -19,7 +19,7 @@ CHARS=['가', '나', '다', '라', '마', '거', '너', '더', '러', '머', '�
 SPACE=[' ']
 JOIN =NUMS + CHARS + SPACE
 ```
-As you have noticed, it is just a list of possible characters and we will use the index of this list as our training and inference. This means you can expand our problem to the problem of other country's license plate character detection as well as the problem of reading the product serial numbers or signboards. For example, Japanese license plates can have the following characters with numbers according to Wikipedia. (source: [wikipedia](https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_Japan))
+As you have noticed, it is just a list of possible characters and we will use the index of this list as our training and inference. This means you can generalize our problem to the problem of other country's license plate character detection as well as the problem of reading the product serial numbers or signboards. For example, Japanese license plates can have the following characters with numbers according to Wikipedia. (source: [wikipedia](https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_Japan))
 ```python
 CHARS=['さ', 'す', 'せ', 'そ', 'た', 'ち', 'つ', 'て', 'と', 'な', 'に', 'ぬ', 'ね', 'の', 'は', 'ひ', 'ふ', 'ほ', 'ま', 'み', 'む', 'め', 'も', 'や', 'ゆ', 'よ', 'ら', 'り', 'る', 'ろ', 'れ', 'わ', 'あ', 'い', 'う', 'え', 'か', 'き', 'く', 'け', 'こ', 'を']
 ```
@@ -27,7 +27,7 @@ CHARS=['さ', 'す', 'せ', 'そ', 'た', 'ち', 'つ', 'て', 'と', 'な', '�
 
 ### Preparing labeled data
 
-In the Lab 1, you will generate synthesized images with labels for your ML training. Image synthesis is a frequently used technique for data augmentation when you do not have enough data. (Even though they are less effective than actual data.)
+In Lab 1, you will generate synthesized images with labels for your ML training. Image synthesis is a frequently used technique for data augmentation when you do not have enough data. (Even though they are less effective than actual data.)
 
 To create images in the Lab, simply execute the following code in ipynb.
 
@@ -35,12 +35,12 @@ To create images in the Lab, simply execute the following code in ipynb.
 %run gen-w-bbx.py {num_of_images}
 ```
 
-You will generate 2 kinds of labeled data pair: raw image with the label of license plate area position and cropped image with the label of character index.
+You will generate 2 kinds of labeled data pairs: raw image with its label consisting of license plate area position and cropped image with its label consisting of character index.
   
 <img src='imgs/annotation.png' stype='width:600px;'/>  
   
 <br /><br />
-If you are wondering about the image synthesis, below code is the secret. (It's in the gen-w-bbx.py file.)
+If you are wondering about the image synthesis, the code below is the secret. (It's in the gen-w-bbx.py file.)
 ```python
 out = plate * plate_mask + bg * (1.0 - plate_mask)
 ```
@@ -53,9 +53,9 @@ Here, 'plate' is the random sequence of characters. 'plate_mask' is the position
   
 ### License plate area detection with SageMaker Object Detection algorithm
 
-In Lab 2, you will develop your custom Object Detection model to detect the area of license plate with SageMaker built-in Object Detection algorithm. (https://docs.aws.amazon.com/sagemaker/latest/dg/object-detection.html) You can just follow the guide of ipynb of Lab to upload files into S3, run your training job, deploy the trained model, and lastly test the inference from your deployed model. 
+In Lab 2, you will develop your custom Object Detection model to detect the area of the license plate with SageMaker built-in Object Detection algorithm. (https://docs.aws.amazon.com/sagemaker/latest/dg/object-detection.html) You can just follow the guide of ipynb of Lab to upload files into S3, run your training job, deploy the trained model, and lastly test the inference from your deployed model. 
 
-One important concept you need to remember in this Lab is Transfer Learning. As you use built-in algorithm of SageMaker you can turn Transfer Learning on by setting the ‘use_pretrained_model’ hyperparameter as 1(true), which enables you to leverage pre-trained weight of CNN architecture. This allows you to obtain a high quality model with a relatively small number of images. (Lab uses 10,000 images as default but it also works well with 1,000 images.)
+One important concept you need to remember in this Lab is Transfer Learning. As you use built-in algorithm of SageMaker you can turn Transfer Learning on by setting the ‘use_pretrained_model’ hyperparameter as 1(true), which enables you to leverage the pre-trained weights of CNN architecture. This allows you to obtain a high quality model with a relatively small number of images. (The Lab uses 10,000 images as default but it also works well with 1,000 images.)
 ```python
 od_model.set_hyperparameters(base_network='resnet-50',
                              use_pretrained_model=1,
@@ -65,7 +65,7 @@ od_model.set_hyperparameters(base_network='resnet-50',
                              learning_rate=0.001,
                              ...)
 ```
-After the 10~20 minutes training, the training will end and you can see the result like below diagram. From the result list, the first number 0 means a label which means license plate in our example. The second 0.99... is the confidence for the detected object(license plate). The consecutive numbers from the third to the last mean relative x, y coordinates in the image, the width of detected area, and the height of the detected area, respectively.  
+After the 10~20 minutes training, the training will end and you can see the result like below diagram. From the result list, the first number 0 signifies a label which means license plate in our example. The second 0.99... is the confidence for the detected object(license plate). The consecutive numbers from the third to the last mean relative x, y coordinates in the image, the width of detected area, and the height of the detected area, respectively.  
   
 {'prediction': [[0.0, 0.9999839067459106, 0.1715950071811676, 0.27236270904541016, 0.808781623840332, 0.7239940166473389]]}  
 <img src='imgs/od_sample1.png' stype='width:200px;'/>  
@@ -78,7 +78,7 @@ After the 10~20 minutes training, the training will end and you can see the resu
 
 ### Preparing Tensorflow script with Keras
 
-In Lab 3, you will write your own custom CNN architecture with Tensorflow and run it quickly to check if the code is grammatically correct. It will have 128 x 64 input layer, 3 Convolutional layers with Max Pooling and Batch Normalization, 1 flatten layer right before the output layer, and finally 7 output layers for each character of license plate number. We will reshape input images to 128 x 64. The last output nodes express the probability of each classification among 81 characters. 
+In Lab 3, you will write your own custom CNN architecture with Tensorflow and run it quickly to check if the code is grammatically correct. It will have 128 x 64 input layer, 3 Convolutional layers with Max Pooling and Batch Normalization, 1 Flatten layer right before the output layer, and finally 7 output layers for each character of license plate number. We will reshape input images to 128 x 64. The last output nodes express the probability of each classification among 81 characters. 
 
 You will see the summary of the architecture easily thanks to Keras as below. 
 ```python
@@ -149,22 +149,7 @@ The following picture illustrates the process of the data mapping that occurs in
 <br />
     
 Look at the orange channel names in the picture above. If you pass data interface channels as a JSON key-value format, SageMaker will create each folder inside your Docker Container '/opt/ml/input/data/' folder, such as '/opt/ml/input/data/train/', '/opt/ml/input/data/validation/', etc. You should refer those folders by using SM_CHANNEL_{channel} parameters (or using those pathes explicitly).
-
-
-After the training job is finishes, the result will be sent back to S3. SageMaker will copy the trainned model from the folder '/opt/ml/model' to S3 at the end of training. Therefore, you need to store your trained model in this folder. In Tensorflow, you need to store checkpoint and model data.
-
-
-```python
-# model_dir = '/opt/ml/model' # this value will be passed as an argument)
-
-# save checkpoint for locally loading in notebook
-saver = tfe.Saver(model_k.variables)
-saver.save(model_dir + '/weights.ckpt')
-
-# create a separate SavedModel for deployment to a SageMaker endpoint with TensorFlow Serving
-tf.contrib.saved_model.save_keras_model(model_k, model_dir)
-```
-          
+    
 
 One more thing to understand is the control of hyperparameters. You may want to control hyperparameters like 'learning rate', 'number of epochs', etc. externally. Refer to the below picture. When you initiate your training job in your Jupyter notebook, hyperparameters will be passed as arguments of the python run command line script like the code in the middle of the picture. (You can find this command from the log of your trining job in Lab4.) And you can use them in your script to tune your job. 
 
