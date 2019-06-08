@@ -138,25 +138,25 @@ ________________________________________________________________________________
 
 ### Bring your own script to SageMaker Tensorflow Estimator
 
-In Lab 4, you will see how to modify the code of Lab 3 to run on Amazon SageMaker. For TensorFlow versions 1.11 and later, the SageMaker Python SDK supports script mode training scripts. With this mode, you can write BYOS in much the same way as you would in an existing environment. 
+In Lab 4, you will see how to modify the code of Lab 3 to run it on Amazon SageMaker. For TensorFlow versions 1.11 and later, the SageMaker Python SDK supports script mode training scripts. With this mode, you can write BYOS in much the same way as you would in an existing environment.
 
 The most important modification to run the code on SageMaker is to match the input/output channels of the data. In terms of input channels, SageMaker training job runs on Docker Container and it assumes that the training data is on the S3. 
 
-The following picture illustrates the process of the data mapping that occurs in the SageMaker. At first, you upload your data into S3. Next, in your python notebook, you will pass those S3 path into your training job as a parameter. And then SageMaker will copy the S3 data into the '/opt/ml/input/data/{channel}/' folder in your Docker Container and pass the paths as SM_CHANNEL_{channel} parameters.
+The following picture illustrates the process of the data mapping that occurs in the SageMaker. At first, you upload your data into S3. Next, in your python notebook, you will pass those S3 path into your training job as a parameter of JSON key-value format. And then SageMaker will copy the S3 data into the '/opt/ml/input/data/{channel}/' folder in your Docker Container and pass the paths as SM_CHANNEL_{channel} parameters. You should refer to those folders by using SM_CHANNEL_{channel} parameters or using those pathes explicitly in your BYOS.(Look at the orange channel names in the picture below).
 
 
 <img src='imgs/sm_data_path.png' stype='width:600px;'/>  
 <br />
-    
-Look at the orange channel names in the picture above. If you pass data interface channels as a JSON key-value format, SageMaker will create each folder inside your Docker Container '/opt/ml/input/data/' folder, such as '/opt/ml/input/data/train/', '/opt/ml/input/data/validation/', etc. You should refer those folders by using SM_CHANNEL_{channel} parameters (or using those pathes explicitly).
-    
+  
 
-One more thing to understand is the control of hyperparameters. You may want to control hyperparameters like 'learning rate', 'number of epochs', etc. externally. Refer to the below picture. When you initiate your training job in your Jupyter notebook, hyperparameters will be passed as arguments of the python run command line script like the code in the middle of the picture. (You can find this command from the log of your trining job in Lab4.) And you can use them in your script to tune your job. 
+One more thing to understand is the control of hyperparameters. You may want to control hyperparameters like 'learning rate', 'number of epochs', etc. externally. Refer to the below picture. When you initiate your training job in your Jupyter notebook, hyperparameters will be passed as arguments of the python run command line script like the code in the middle of the picture. (You can find this command from the log of your trining job in Lab4.) 
+
 
 <img src='imgs/sm_parameters.png' stype='width:600px;'/>  
 <br />
 
-Now you can run your code on SageMaker. In fact, you may start your first script with hard-coded hyperparameters inside the BYOS. The most important part will be the match of in/out channels. You may refer to below resources for more information regarding Tensorflow script mode.
+
+You may refer to below resources for more information regarding Tensorflow script mode.
 
 * https://aws.amazon.com/blogs/machine-learning/using-tensorflow-eager-execution-with-amazon-sagemaker-script-mode/
 * https://docs.aws.amazon.com/sagemaker/latest/dg/tf.html
@@ -173,17 +173,16 @@ When you finish Lab4, you will see the result like below:
 ['0', '5', '느', '4', '9', '4', '6']  
 <br />
   
-You may find some mistakes like  3rd result above. (it recognized Korean character '노' as '느'.) It is a natural at the first stage of the ML project. You may add more synthesis or real data, change the internal architecture of CNN, or break the problem to 3 sub problems (Finding character areas and classifying the character), etc. You will repeat these experiments until you get the desired target quality. 
+You may find some mistakes like  3rd result above. (it recognized Korean character '노' as '느'.) It is a natural at the first stage of the ML project. You may add more synthesized data or real data, change the internal architecture of CNN, or break the problem to 3 sub problems (Finding character areas and classifying the character), etc. You will repeat these experiments until you get the desired target quality. 
 
-In our case, adding more data is the first improvement we can try. Below is the result that I tried with 100,000 images. You can see the result was improved with more training data.
-
+In our case, adding more training data would be the first improvement we can try. Below you’ll find the result trained with 100,00 images, and you’ll notice steady improvement of accuracy.
   
 <img src='imgs/finalresult.png' stype='width:600px;'/>  
 <br />
 
 ### Going further
 
-Now you can create your own custom Object Detection and custom Tensorfllow CNN model with SageMaker if you have labeled data for the object you want to track. For example, you may develop your serial number detector of your product or your custom pet detector from your mobile photo book. (Below are conceptual illustrations.)
+Now you can create your own custom Object Detection and custom Tensorfllow CNN model with SageMaker if you have labeled data for the objects you want to track. You will extend the applications of this lab. For example, you may develop your own serial number detector of your product or your own custom pet detector from your mobile photo book. (Below are conceptual illustrations.) 
 
 <img src='imgs/further.png' stype='width:600px;'/>  
 
