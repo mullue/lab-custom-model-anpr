@@ -140,7 +140,7 @@ ________________________________________________________________________________
 
 In Lab 4, you will see how to modify the code of Lab 3 to run on Amazon SageMaker. For TensorFlow versions 1.11 and later, the SageMaker Python SDK supports script mode training scripts. With this mode, you can write BYOS in much the same way as you would in an existing environment. 
 
-The most important modification to run the code on SageMaker is to match the input/output channels of the data. In terms of input channels, SageMaker training job runs on Docker Container and it assumes that the training data is on the S3. In this case, how does the training job access the data in S3 and how is the job result passed after training?
+The most important modification to run the code on SageMaker is to match the input/output channels of the data. In terms of input channels, SageMaker training job runs on Docker Container and it assumes that the training data is on the S3. 
 
 The following picture illustrates the process of the data mapping that occurs in the SageMaker. At first, you upload your data into S3. Next, in your python notebook, you will pass those S3 path into your training job as a parameter. And then SageMaker will copy the S3 data into the '/opt/ml/input/data/{channel}/' folder in your Docker Container and pass the paths as SM_CHANNEL_{channel} parameters.
 
