@@ -1,14 +1,14 @@
 
 ## Building license plate number recognition with SageMaker built-in algorithm and Tensorflow BYOS (step-by-step)
 
-In this article, you will find how to use SageMaker built-in algorithm and Tensorflow BYOS(Bring Your Own Script) to solve a real problem. Here the problem is to recognize characters of license plates from random images. SageMaker provides algorithms to users in three ways. These are the Built-in algorithm, BYOS, and BYOC(Bring Your Own Container) and you will use Built-in algorithm and BYOS very often. The code example consists of 4 Self-study Hands on Labs which you can follow and you can download it from [this link](https://github.com/mullue/lab-custom-model-anpr). The main problem and concepts were referenced in [this blog](https://matthewearl.github.io/2016/05/06/cnn-anpr/). 
+In this article, you will find how to use SageMaker built-in algorithm and Tensorflow BYOS(Bring Your Own Script) to solve a real problem. Here the problem is to recognize characters of license plates from random images. SageMaker provides algorithms to users in three ways. These are the Built-in algorithm, BYOS, and BYOC(Bring Your Own Container) and you will use Built-in algorithm and BYOS very often. The code example consists of 4 Self-study Hands on Labs which you can follow and you can download it from [this link](https://github.com/mullue/lab-custom-model-anpr). The data processing code was inspired by [this link](https://github.com/matthewearl/deep-anpr).
 <br /><br />
 
 ### Problem and project definition
 
 We will divide our problem into two parts: the problem of detecting the area of the license plate from images and the problem of recognizing characters from license plate area. This choice can be an example of whether to solve the ML problem with end-to-end approach or sub-problem separation. 
   
-The diagram below shows an example of approaches that prepare a machine learning project. Many commercial companies that deal with license plate recognition usually follow the sub-problem separation approach like in the 1st picture. They detect license plate area first, and detect character’s image areas next, and then finally recognize the characters from the each character's image areas. And, many end-to-end approaches are being experimented with. You can refer to Metthew's blog as an example of end-to-end approach like in the 2nd picture. In our example, we will take a moderate approach like in the 3rd picture.
+The diagram below shows an example of approaches that prepare a machine learning project. Many commercial companies that deal with license plate recognition usually follow the sub-problem separation approach like in the 1st picture. They detect license plate area first, and detect character’s image areas next, and then finally recognize the characters from the each character's image areas. And, many end-to-end approaches are being experimented with like in the 2nd picture. In our example, we will take a moderate approach like in the 3rd picture.
 
 <img src='imgs/ml_projects.png' stype='width:600px;'/>  
 
