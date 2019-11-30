@@ -9,7 +9,7 @@ This HoL consists of four Labs, each with the following details:
 
 <hr/>  
 
-## [Lab1. Data preparation](Lab1-data-prep.ipynb)
+## [Lab0. Prerequisite-Data preparation](Lab0-data-prep.ipynb)
 - Generating images and annotation data for ML training 
 - Image synthesis  
 - Example structure of annotation file  
@@ -28,7 +28,7 @@ This HoL consists of four Labs, each with the following details:
   
 <hr/>  
 
-## [Lab2. Custom object detection with SageMaker built-in algorithm](Lab2-custom-object-detection.ipynb)
+## [Lab1. Custom object detection with SageMaker built-in algorithm](Lab1-custom-object-detection.ipynb)
 - Using SageMaker built-in algorithm
 - Developing custom Object Detection 
 - Leveraging Transfer Learning (Resnet-50)
@@ -41,7 +41,7 @@ This HoL consists of four Labs, each with the following details:
    
 <hr/>  
 
-## [Lab3. Custom CNN script with Tensorflow and Keras](Lab3-custom-CNN-script-with-TF.ipynb)
+## [Lab2. Custom CNN script with Tensorflow and Keras](Lab2-custom-CNN-script-with-TF.ipynb)
 - Composing custom CNN(Convolution Neural Net) architecture with Tensorflow and Keras  
 - Developing and testing custom Tensorflow script and before running training jobs on SageMaker
 
@@ -54,7 +54,7 @@ This HoL consists of four Labs, each with the following details:
   
 <hr/>  
 
-## [Lab4. Training, Deploying and hosting custom model on SageMaker](Lab4-train-deploy-host-on-SM.ipynb)
+## [Lab3. Training, Deploying and hosting custom model on SageMaker](Lab3-train-deploy-host-on-SM.ipynb)
 - Developing with Tensorflow script mode of SageMaker
 - Leveraging distributed training in the Cloud
 - 1 click deployment and endpoint hosting
